@@ -17,6 +17,7 @@
   </div>
   <!-- Rooms -->
   <div>
+    <h5>{{total_rooms}} Room(s) Available</h5>
     <a href="{% url 'room_add' %}">Create Room</a>
     <div>
       {% for room in rooms  %}

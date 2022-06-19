@@ -1,5 +1,5 @@
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.db.models import Q
 from .models import Room, Topic
 from .forms import RoomForm
 
@@ -8,14 +8,20 @@ Home Model
 """
 
 # --- Index --- #
+
+
 def home_index(request):
     # Get Rooms by Filter
     q = request.GET.get("q") if request.GET.get("q") != None else ""
-    rooms = Room.objects.filter(topic__name__icontains=q)
+    rooms = Room.objects.filter(
+        Q(topic__name__icontains=q) |
+        Q(name__icontains=q) |
+        Q(description__icontains=q)
+    )
     # Get Topics
     topics = Topic.objects.all()
     # Response
-    response = {"rooms": rooms, "topics": topics}
+    response = {"rooms": rooms, "topics": topics, "total_rooms": rooms.count()}
     return render(request, "app/index.html", response)
 
 
@@ -24,6 +30,8 @@ Room Model
 """
 
 # --- Add --- #
+
+
 def room_add(request):
     # Create Room
     form = RoomForm()

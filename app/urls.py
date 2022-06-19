@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = [
     # Auth Routes
-    path("login/",views.login_index,name="login_index"),
+    path("login/", views.login_index, name="login"),
+    path("logout/", views.logout_index, name="logout"),
     # Home Routes
     path("", views.home_index, name="home_index"),
     # Topic Routes

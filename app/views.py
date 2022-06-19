@@ -10,12 +10,13 @@ from .forms import RoomForm
 Authentication
 """
 
-# --- Index --- #
+# --- Login --- #
 
 
 def login_index(request):
-    # Get User
+    # Login
     if request.method == 'POST':
+        # Get form values
         username = request.POST.get('username')
         password = request.POST.get('password')
         # User Existance
@@ -34,6 +35,12 @@ def login_index(request):
     # Response
     response = {}
     return render(request, "app/Authentication/auth.html", response)
+
+
+# --- Logout --- #
+def logout_index(request):
+    logout(request)
+    return redirect('home_index')
 
 
 """ 

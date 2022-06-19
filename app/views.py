@@ -1,7 +1,40 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.db.models import Q
 from .models import Room, Topic
 from .forms import RoomForm
+
+""" 
+Authentication
+"""
+
+# --- Index --- #
+
+
+def login_index(request):
+    # Get User
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        # User Existance
+        try:
+            user = User.objects.get(username=username)
+        except:
+            messages.error(request, 'User does not exist')
+        # Case user exist
+        user = authenticate(request, username=username, password=password)
+        # Credentials Testing
+        if user is not None:
+            login(request, user)
+            return redirect('home_index')
+        else:
+            messages.error(request, 'User does not meet credentials')
+    # Response
+    response = {}
+    return render(request, "app/Authentication/auth.html", response)
+
 
 """ 
 Home Model

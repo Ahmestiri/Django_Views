@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Auth Routes
+    path("login/",views.login_index,name="login_index"),
     # Home Routes
     path("", views.home_index, name="home_index"),
     # Topic Routes

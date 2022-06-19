@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     # Home Routes
     path("", views.home_index, name="home_index"),
+    # Topic Routes
     # Room Routes
     path("room/view/<str:pk>/", views.room_view, name="room_view"),
     path("room/add", views.room_add, name="room_add"),

@@ -29,13 +29,13 @@ class Room(models.Model):
     description = models.TextField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    # Order Rooms
-    class Meta:
-        ordering = ["-updated", "-created"]
-
     # Print Room
     def __str__(self):
         return str(self.name)
+
+    # Order Rooms
+    class Meta:
+        ordering = ["-updated", "-created"]
 
 
 """ 

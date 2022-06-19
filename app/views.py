@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Room
 from .forms import RoomForm
@@ -30,6 +31,18 @@ def room_add(request):
 
 
 # Edit
+def room_edit(request, pk):
+    room = Room.objects.get(id=pk)
+    form = RoomForm(instance=room)
+    if request.method == "POST":
+        form = RoomForm(request.POST, instance=room)
+        if form.is_valid():
+            form.save()
+            return redirect("home_index")
+    response = {"form": form}
+    return render(request, "app/Room/edit.html", response)
+
+
 # View
 def room_view(request, pk):
     room = Room.objects.get(id=pk)
@@ -38,3 +51,9 @@ def room_view(request, pk):
 
 
 # Delete
+def room_delete(request, pk):
+    room = Room.objects.get(id=pk)
+    if request.method == "POST":
+        room.delete()
+        return redirect("home_index")
+    return render(request, "app/delete.html", {"object": room})

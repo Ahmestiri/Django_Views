@@ -5,6 +5,8 @@
   <div>
     {% for room in rooms  %}
     <div>
+      <a href="{% url 'room_edit' room.id %}">Edit Room</a>
+      <a href="{% url 'room_delete' room.id %}">Delete Room</a>
       <span>@{{room.host.username}}</span>
       <h5>{{room.id}} -- <a href="{% url 'room_view' room.id%}">{{room.name}}</a></h5>
       <small>{{room.topic.name}}</small>

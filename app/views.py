@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
-from .models import Room, Topic
+from .models import Room, Topic, Message
 from .forms import RoomForm
 
 """ 
@@ -119,15 +119,36 @@ def room_add(request):
 
 
 # --- View --- #
+
+
 def room_view(request, pk):
     # Get Room by id
     room = Room.objects.get(id=pk)
+    # Get Messages
+    room_messages = room.message_set.all().order_by('-created')
+    # Get Participants
+    participants = room.participants.all()
+    # Create Message and Add Participant
+    if request.method == "POST":
+        message = Message.objects.create(
+            user=request.user,
+            room=room,
+            body=request.POST.get('body')
+        )
+        room.participants.add(request.user)
+        return redirect('room_view', pk=room.id)
     # Response
-    response = {"room": room}
+    response = {
+        "room": room,
+        "room_messages": room_messages,
+        "participants": participants
+    }
     return render(request, "app/Room/view.html", response)
 
 
 # --- Edit --- #
+
+
 @login_required(login_url='login')
 def room_edit(request, pk):
     # Get Room by id
@@ -148,17 +169,42 @@ def room_edit(request, pk):
 
 
 # --- Delete --- #
+
+
 @login_required(login_url='login')
 def room_delete(request, pk):
     # Get Room by id
     room = Room.objects.get(id=pk)
     # Room Creator Only
     if request.user != room.host:
-        return HttpResponse("You can't update this room")
+        return HttpResponse("You can't delete this room")
     # Delete Room
     if request.method == "POST":
         room.delete()
         return redirect("home_index")
     # Response
     response = {"object": room}
+    return render(request, "app/delete.html", response)
+
+
+"""
+Message Model
+"""
+
+# --- Delete --- #
+
+
+@login_required(login_url='login')
+def message_delete(request, pk):
+    # Get Message by id
+    message = Message.objects.get(id=pk)
+    # Message Creator Only
+    if request.user != message.user:
+        return HttpResponse("You can't delete this message")
+    # Delete Message
+    if request.method == "POST":
+        message.delete()
+        return redirect("home_index")
+    # Response
+    response = {"object": message}
     return render(request, "app/delete.html", response)

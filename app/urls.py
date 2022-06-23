@@ -8,7 +8,8 @@ urlpatterns = [
     path("register/", views.register_index, name="register"),
     # Home Routes
     path("", views.home_index, name="home_index"),
-    # Topic Routes
+    # Message Routes
+    path("message/delete/<str:pk>/", views.message_delete, name="message_delete"),
     # Room Routes
     path("room/view/<str:pk>/", views.room_view, name="room_view"),
     path("room/add", views.room_add, name="room_add"),

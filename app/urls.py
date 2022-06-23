@@ -5,6 +5,7 @@ urlpatterns = [
     # Auth Routes
     path("login/", views.login_index, name="login"),
     path("logout/", views.logout_index, name="logout"),
+    path("register/", views.register_index, name="register"),
     # Home Routes
     path("", views.home_index, name="home_index"),
     # Topic Routes

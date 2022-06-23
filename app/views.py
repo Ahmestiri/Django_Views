@@ -1,7 +1,10 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 from .models import Room, Topic
 from .forms import RoomForm
@@ -14,10 +17,15 @@ Authentication
 
 
 def login_index(request):
+    # Variable for login/register
+    page = 'login'
+    # Redirect if logged in
+    if request.user.is_authenticated:
+        return redirect('home_index')
     # Login
     if request.method == 'POST':
         # Get form values
-        username = request.POST.get('username')
+        username = request.POST.get('username').lower()
         password = request.POST.get('password')
         # User Existance
         try:
@@ -33,14 +41,38 @@ def login_index(request):
         else:
             messages.error(request, 'User does not meet credentials')
     # Response
-    response = {}
+    response = {'page': page}
     return render(request, "app/Authentication/auth.html", response)
 
 
 # --- Logout --- #
+
+
 def logout_index(request):
     logout(request)
     return redirect('home_index')
+
+
+# --- Register --- #
+
+
+def register_index(request):
+    # Built In Django Form
+    form = UserCreationForm()
+    # Data Processing
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            login(request, user)
+            return redirect('home_index')
+        else:
+            messages.error(request, 'Error occured during registration')
+    # Response
+    response = {'form': form}
+    return render(request, "app/Authentication/auth.html", response)
 
 
 """ 
@@ -72,6 +104,7 @@ Room Model
 # --- Add --- #
 
 
+@login_required(login_url='login')
 def room_add(request):
     # Create Room
     form = RoomForm()
@@ -95,9 +128,13 @@ def room_view(request, pk):
 
 
 # --- Edit --- #
+@login_required(login_url='login')
 def room_edit(request, pk):
     # Get Room by id
     room = Room.objects.get(id=pk)
+    # Room Creator Only
+    if request.user != room.host:
+        return HttpResponse("You can't update this room")
     # Edit Room
     form = RoomForm(instance=room)
     if request.method == "POST":
@@ -111,9 +148,13 @@ def room_edit(request, pk):
 
 
 # --- Delete --- #
+@login_required(login_url='login')
 def room_delete(request, pk):
     # Get Room by id
     room = Room.objects.get(id=pk)
+    # Room Creator Only
+    if request.user != room.host:
+        return HttpResponse("You can't update this room")
     # Delete Room
     if request.method == "POST":
         room.delete()

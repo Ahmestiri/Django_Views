@@ -53,3 +53,6 @@ class Message(models.Model):
 
     def __str__(self):
         return str(self.body[0:50])
+
+    class Meta:
+        ordering = ["-updated", "-created"]

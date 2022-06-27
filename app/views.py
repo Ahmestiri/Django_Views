@@ -9,7 +9,7 @@ from django.db.models import Q
 from .models import Room, Topic, Message
 from .forms import RoomForm
 
-""" 
+"""
 Authentication
 """
 
@@ -75,14 +75,16 @@ def register_index(request):
     return render(request, "app/Authentication/auth.html", response)
 
 
-""" 
-Home Model
+"""
+Room Model
 """
 
 # --- Index --- #
 
 
 def home_index(request):
+    # Get Topics
+    topics = Topic.objects.all()
     # Get Rooms by Filter
     q = request.GET.get("q") if request.GET.get("q") != None else ""
     rooms = Room.objects.filter(
@@ -90,21 +92,25 @@ def home_index(request):
         Q(name__icontains=q) |
         Q(description__icontains=q)
     )
-    # Get Topics
-    topics = Topic.objects.all()
+    # Get Messages by Filter
+    room_messages = Message.objects.filter(
+        Q(room__topic__name__icontains=q)
+    )
     # Response
-    response = {"rooms": rooms, "topics": topics, "total_rooms": rooms.count()}
+    response = {
+        "rooms": rooms,
+        "topics": topics,
+        "total_rooms": rooms.count(),
+        "room_messages": room_messages,
+        "total_room_messages": room_messages.count(),
+    }
     return render(request, "app/index.html", response)
 
-
-""" 
-Room Model
-"""
 
 # --- Add --- #
 
 
-@login_required(login_url='login')
+@ login_required(login_url='login')
 def room_add(request):
     # Create Room
     form = RoomForm()
@@ -125,7 +131,7 @@ def room_view(request, pk):
     # Get Room by id
     room = Room.objects.get(id=pk)
     # Get Messages
-    room_messages = room.message_set.all().order_by('-created')
+    room_messages = room.message_set.all()
     # Get Participants
     participants = room.participants.all()
     # Create Message and Add Participant
@@ -149,7 +155,7 @@ def room_view(request, pk):
 # --- Edit --- #
 
 
-@login_required(login_url='login')
+@ login_required(login_url='login')
 def room_edit(request, pk):
     # Get Room by id
     room = Room.objects.get(id=pk)
@@ -171,7 +177,7 @@ def room_edit(request, pk):
 # --- Delete --- #
 
 
-@login_required(login_url='login')
+@ login_required(login_url='login')
 def room_delete(request, pk):
     # Get Room by id
     room = Room.objects.get(id=pk)
@@ -194,7 +200,7 @@ Message Model
 # --- Delete --- #
 
 
-@login_required(login_url='login')
+@ login_required(login_url='login')
 def message_delete(request, pk):
     # Get Message by id
     message = Message.objects.get(id=pk)

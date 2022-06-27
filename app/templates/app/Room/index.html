@@ -4,7 +4,7 @@
 <a href="{% url 'room_edit' room.id %}">Edit Room</a>
 <a href="{% url 'room_delete' room.id %}">Delete Room</a>
 {% endif %}
-<span>@{{room.host.username}}</span>
+<a href="{% url 'user_index' room.host.id %}">@{{room.host.username}}</a>
 <h5>{{room.id}} -- <a href="{% url 'room_view' room.id%}">{{room.name}}</a></h5>
 <small>{{room.topic.name}}</small>
 <hr>

@@ -6,6 +6,8 @@ urlpatterns = [
     path("login/", views.login_index, name="login"),
     path("logout/", views.logout_index, name="logout"),
     path("register/", views.register_index, name="register"),
+    # User Routes
+    path("user/<str:pk>/", views.user_index, name="user_index"),
     # Message Routes
     path("message/delete/<str:pk>/", views.message_delete, name="message_delete"),
     # Room Routes

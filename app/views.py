@@ -76,6 +76,32 @@ def register_index(request):
 
 
 """
+User Model
+"""
+
+# --- Index --- #
+
+
+def user_index(request, pk):
+    # Get all Topics
+    topics = Topic.objects.all()
+    # Get User by id
+    user = User.objects.get(id=pk)
+    # Get User Rooms
+    rooms = user.room_set.all()
+    # Get User Messages
+    room_messages = user.message_set.all()
+    # Response
+    response = {
+        'user': user,
+        'topics': topics,
+        'rooms': rooms,
+        'room_messages': room_messages
+    }
+    return render(request, "app/User/index.html", response)
+
+
+"""
 Room Model
 """
 

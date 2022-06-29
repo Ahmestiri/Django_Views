@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 from .models import Room, Topic, Message
-from .forms import RoomForm
+from .forms import RoomForm, UserForm
 
 """
 Authentication
@@ -99,6 +99,22 @@ def user_index(request, pk):
         'room_messages': room_messages
     }
     return render(request, "app/User/index.html", response)
+
+
+# --- Edit --- #
+
+@ login_required(login_url='login')
+def user_edit(request, pk):
+    # Edit User
+    form = UserForm(instance=request.user)
+    if request.method == "POST":
+        form = UserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("user_index", pk=request.user.id)
+    # Response
+    response = {"form": form}
+    return render(request, "app/User/edit.html", response)
 
 
 """

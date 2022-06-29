@@ -1,11 +1,6 @@
-{% extends 'head.html' %}
-
-{% block content %}
 <main class="profile-page layout layout--3">
   <div class="container">
-    <!-- Topics -->
-    {% include "./../Topic/index.html" %}
-    <!-- Rooms -->
+    <!-- Room List Start -->
     <div class="roomList">
       <div class="profile">
         <div class="profile__avatar">
@@ -14,8 +9,8 @@
           </div>
         </div>
         <div class="profile__info">
-          <h3>{{user.username}}</h3>
-          <p>@{{user.username}}</p>
+          <h3>Dennis Kardasian Ivy</h3>
+          <p>@dennis_ivy</p>
           <a href="edit-user.html" class="btn btn--main btn--pill">Edit Profile</a>
         </div>
         <div class="profile__about">
@@ -29,14 +24,12 @@
       </div>
       <div class="roomList__header">
         <div>
-          <h2>Study Rooms Hosted by {{user.username}}</a>
+          <h2>Study Rooms Hosted by dennis_ivy</a>
           </h2>
         </div>
       </div>
-      {% include "./../Room/index.html" %}
-    </div>    
-    <!-- Activities -->
-    {% include "./../Message/index.html" %}
+      {% include "./Room/index.html" %}
+    </div>
+    <!-- Room List End -->
   </div>
 </main>
-{% endblock %}

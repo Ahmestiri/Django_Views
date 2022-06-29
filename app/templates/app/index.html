@@ -1,22 +1,14 @@
 {% extends 'head.html' %}
 
 {% block content %}
-<div class="home-container">
-  <!-- Topics -->
-  <div>
+<main class="layout layout--3">
+  <div class="container">
+    <!-- Topics -->
     {% include "./Topic/index.html" %}
-  </div>
-  <!-- Rooms -->
-  <div>
-    <h5>{{total_rooms}} Room(s) Available</h5>
-    <a href="{% url 'room_add' %}">Create Room</a>
-    <div>
-      {% include "./Room/index.html" %}
-    </div>
-  </div>
-  <!-- Activities -->
-  <div>
+    <!-- Rooms -->
+    {% include "./Room/index.html" %}
+    <!-- Activities -->
     {% include "./Message/index.html" %}
   </div>
-</div>
+</main>
 {% endblock %}

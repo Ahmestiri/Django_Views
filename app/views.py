@@ -124,9 +124,8 @@ def home_index(request):
     )
     # Response
     response = {
-        "rooms": rooms,
         "topics": topics,
-        "total_rooms": rooms.count(),
+        "rooms": rooms,
         "room_messages": room_messages,
         "total_room_messages": room_messages.count(),
     }
@@ -138,15 +137,26 @@ def home_index(request):
 
 @ login_required(login_url='login')
 def room_add(request):
+    # Get Topic
+    topics = Topic.objects.all()
     # Create Room
     form = RoomForm()
     if request.method == "POST":
+        # Get Form data
         form = RoomForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("home_index")
+        # Get and Create Topic
+        topic_name = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+        # Create Room
+        Room.objects.create(
+            host=request.user,
+            topic=topic,
+            name=request.POST.get('name'),
+            description=request.POST.get('description'),
+        )
+        return redirect("home_index")
     # Reponse
-    response = {"form": form}
+    response = {"form": form, "topics": topics}
     return render(request, "app/Room/add.html", response)
 
 

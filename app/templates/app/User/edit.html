@@ -6,7 +6,7 @@
         <div class="layout__box">
           <div class="layout__boxHeader">
             <div class="layout__boxTitle">
-              <a href="{% url 'user_index' user.id%}">
+              <a href="{% url 'user_view' user.id%}">
                 <svg
                   version="1.1"
                   xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +53,7 @@
                     {{form.bio}}
                   </div>
                 <div class="form__action">
-                  <a class="btn btn--dark" href="{% url 'user_index' user.id%}">Cancel</a>
+                  <a class="btn btn--dark" href="{% url 'user_view' user.id%}">Cancel</a>
                   <button class="btn btn--main" type="submit">Update Settings</button>
                 </div>
             </form>

@@ -7,7 +7,8 @@ urlpatterns = [
     path("logout/", views.logout_index, name="logout"),
     path("register/", views.register_index, name="register"),
     # User Routes
-    path("user/view/<str:pk>/", views.user_index, name="user_index"),
+    path("user/index/", views.user_index, name="user_index"),
+    path("user/view/<str:pk>/", views.user_view, name="user_view"),
     path("user/edit/<str:pk>/", views.user_edit, name="user_edit"),
     # Message Routes
     path("message/delete/<str:pk>/", views.message_delete, name="message_delete"),

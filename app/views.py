@@ -80,7 +80,30 @@ User Model
 # --- Index --- #
 
 
-def user_index(request, pk):
+def user_index(request):
+    usersArray = []
+    rooms = []
+    room_messages = []
+    # Get all Users
+    users = User.objects.all()
+    for user in users:
+        usersArray.append(user)
+        # Get User Rooms
+        rooms.append(len(user.room_set.all()))
+        # Get User Messages
+        room_messages.append(len(user.message_set.all()))
+        response = {
+            'users': usersArray,
+            'rooms': rooms,
+            'room_messages': room_messages,
+        }
+    return render(request, "app/User/index.html", response)
+
+
+# --- View --- #
+
+
+def user_view(request, pk):
     # Get all Topics
     topics = Topic.objects.all()
     # Get User by id
@@ -96,7 +119,7 @@ def user_index(request, pk):
         'rooms': rooms,
         'room_messages': room_messages
     }
-    return render(request, "app/User/index.html", response)
+    return render(request, "app/User/view.html", response)
 
 
 # --- Edit --- #
@@ -109,7 +132,7 @@ def user_edit(request, pk):
         form = UserForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect("user_index", pk=request.user.id)
+            return redirect("user_view", pk=request.user.id)
     # Response
     response = {"form": form}
     return render(request, "app/User/edit.html", response)

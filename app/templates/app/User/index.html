@@ -1,42 +1,31 @@
 {% extends 'head.html' %}
 
 {% block content %}
-<main class="profile-page layout layout--3">
-  <div class="container">
-    <!-- Topics -->
-    {% include "./../Topic/index.html" %}
-    <!-- Rooms -->
-    <div class="roomList">
-      <div class="profile">
-        <div class="profile__avatar">
-          <div class="avatar avatar--large active">
-            <img src="{{user.image.url}}" />
-          </div>
-        </div>
-        <div class="profile__info">
-          <h3>{{user.name}}</h3>
-          <p>@{{user.username}}</p>
-          {% if request.user == user %}
-            <a href="{% url 'user_edit' user.id%}" class="btn btn--main btn--pill">Edit Profile</a>
-          {% endif %}
-        </div>
-        <div class="profile__about">
-          <h3>About</h3>
-          <p>
-            {{user.bio}}
-          </p>
-        </div>
+<div class="container mt-5">
+  <div class="row mt-5">
+    {% for user in users %}
+    <div class="card bg-dark col-4 p-0">
+      <img class="card-img-top offset-3 p-5" src="{{user.image.url}}" alt="Card image cap" style="width:200px; border-radius:50%">
+      <div class="card-body">
+        <h3 class="card-title text-center">{{user.name}}</h3>
+        <a href="{% url 'user_view' user.id %}">@{{user.username}}</a>
+        <p class="card-text">{{user.bio}}</p>
       </div>
-      <div class="roomList__header">
-        <div>
-          <h2>Study Rooms Hosted by {{user.username}}</a>
-          </h2>
-        </div>
+      <div class="card-footer">
+          {% for room in rooms %}
+            {% if forloop.counter == user.id %}
+                <small class="text-muted">Number of rooms : {{room}}</small> <br>
+            {% endif %}
+          {% endfor %}
+          {% for message in room_messages %}
+            {% if forloop.counter == user.id %}
+              <small class="text-muted">Number of messages : {{message}}</small>
+            {% endif %}
+          {% endfor %}
+          
       </div>
-      {% include "./../Room/index.html" %}
-    </div>    
-    <!-- Activities -->
-    {% include "./../Message/index.html" %}
+    </div>
+    {% endfor %}
   </div>
-</main>
+</div>
 {% endblock %}

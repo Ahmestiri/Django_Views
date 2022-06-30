@@ -24,20 +24,34 @@
             </div>
           </div>
 
-          <div class="settings layout__body">
-            {% comment %} <div class="settings__avatar">
+          <div class="settings layout__body" style="max-height:450px; overflow: auto;">
+            <div class="settings__avatar">
               <div class="avatar avatar--large active">
-                <img src="assets/avatar.svg" id="preview-avatar" />
+                <img src="{{user.image.url}}" id="preview-avatar" />
               </div>
-            </div> {% endcomment %}
-            <form class="form" action="" method="POST">
+            </div>
+            <form class="form" action="" method="POST" enctype="multipart/form-data">
               {% csrf_token %}
-                {% for field in form  %}
                   <div class="form__group">
-                    <label>{{field.label}}</label>
-                    {{field}}
+                    <label>{{form.name.label}}</label>
+                    {{form.name}}
                   </div>
-                {% endfor %}
+                  <div class="form__group">
+                    <label>{{form.username.label}}</label>
+                    {{form.username}}
+                  </div>
+                  <div class="form__group">
+                    <label>{{form.email.label}}</label>
+                    {{form.email}}
+                  </div>
+                  <div class="form__group">
+                    <label>{{form.image.label}}</label>
+                    {{form.image}}
+                  </div>
+                  <div class="form__group">
+                    <label>{{form.bio.label}}</label>
+                    {{form.bio}}
+                  </div>
                 <div class="form__action">
                   <a class="btn btn--dark" href="{% url 'user_index' user.id%}">Cancel</a>
                   <button class="btn btn--main" type="submit">Update Settings</button>
@@ -48,4 +62,3 @@
       </div>
     </main>
 {% endblock %}
-

@@ -2,12 +2,10 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
-from .models import Room, Topic, Message
-from .forms import RoomForm, UserForm
+from .models import User, Room, Topic, Message
+from .forms import RegisterForm, RoomForm, UserForm
 
 """
 Authentication
@@ -25,15 +23,15 @@ def login_index(request):
     # Login
     if request.method == 'POST':
         # Get form values
-        username = request.POST.get('username').lower()
+        email = request.POST.get('email').lower()
         password = request.POST.get('password')
         # User Existance
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(email=email)
         except:
             messages.error(request, 'User does not exist')
         # Case user exist
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, email=email, password=password)
         # Credentials Testing
         if user is not None:
             login(request, user)
@@ -58,10 +56,10 @@ def logout_index(request):
 
 def register_index(request):
     # Built In Django Form
-    form = UserCreationForm()
+    form = RegisterForm()
     # Data Processing
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
@@ -108,7 +106,7 @@ def user_edit(request, pk):
     # Edit User
     form = UserForm(instance=request.user)
     if request.method == "POST":
-        form = UserForm(request.POST, instance=request.user)
+        form = UserForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             return redirect("user_index", pk=request.user.id)
